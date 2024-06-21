@@ -286,5 +286,3 @@ ncaa_game_logs <- function(player_id,year,type = "batting", span = 'game') {
   return(payload_df)
 
 }
-
-tst <- ncaa_game_logs(8269316,2024, type = "pitching", span = "career")
