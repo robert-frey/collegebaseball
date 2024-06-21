@@ -1,14 +1,14 @@
-\name{ncaa_team_id_lookup}
-\alias{ncaa_team_id_lookup}
+\name{ncaa_game_logs}
+\alias{ncaa_game_logs}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ncaa_team_id_lookup
+\title{ncaa_game_logs
 %%  ~~function to do ... ~~
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ncaa_team_id_lookup(x)
+ncaa_game_logs(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
