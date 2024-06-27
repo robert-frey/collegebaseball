@@ -8,7 +8,6 @@
 #'
 #' @import baseballr
 #' @import dplyr
-#'
 #' @export
 #'
 #'  @examples \donttest{
