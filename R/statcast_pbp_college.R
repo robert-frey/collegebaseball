@@ -5,27 +5,27 @@
 #'
 #' colname  type
 #' play_id: character
-#' inning: integer
-#' ab_number: integer
-#' cap_index: integer
-#' outs: integer
-#' batter: integer
+#' inning: numeric
+#' ab_number: numeric
+#' cap_index: numeric
+#' outs: numeric
+#' batter: numeric
 #' stand: character
 #' batter_name: character
-#' pitcher: integer
+#' pitcher: numeric
 #' p_throws: character
 #' pitcher_name: character
 #' team_batting: character
 #' team_fielding: character
-#' team_batting_id: integer
-#' team_fielding_id: integer
+#' team_batting_id: numeric
+#' team_fielding_id: numeric
 #' result: character
 #' des: character
 #' events: character
-#' strikes: integer
-#' balls: integer
-#' pre_strikes: integer
-#' pre_balls: integer
+#' strikes: numeric
+#' balls: numeric
+#' pre_strikes: numeric
+#' pre_balls: numeric
 #' call: character
 #' call_name: character
 #' description: character
@@ -35,20 +35,37 @@
 #' balls_and_strikes: character
 #' sz_top: numeric
 #' sz_bot: numeric
-#' pfxZWithGravity: logical
-#' pfxZWithGravityNice: logical
+#' extension: numeric
+#' plateTime: numeric
+#' zone: numeric
+#' spin_rate: numeric
+#' px: numeric
+#' pz: numeric
+#' x0: numeric
+#' y0: numeric
+#' z0: numeric
+#' ax: numeric
+#' ay: numeric
+#' az: numeric
+#' vx0: numeric
+#' vy0: numeric
+#' vz0: numeric
+#' pfxX: numeric
+#' pfxZ: numeric
+#' pfxZWithGravity: numeric
+#' pfxZWithGravityNice: numeric
 #' pfxZDirection: character
-#' pfxXWithGravity: logical
+#' pfxXWithGravity: numeric
 #' pfxXNoAbs: numeric
 #' pfxXDirection: character
-#' breakX: logical
-#' breakZ: logical
-#' inducedBreakZ: logical
+#' breakX: numeric
+#' breakZ: numeric
+#' inducedBreakZ: numeric
 #' is_bip_out: character
-#' pitch_number: integer
-#' player_total_pitches: integer
-#' player_total_pitches_pitch_types: integer
-#' game_total_pitches: integer
+#' pitch_number: numeric
+#' player_total_pitches: numeric
+#' player_total_pitches_pitch_types: numeric
+#' game_total_pitches: numeric
 #' rowId: character
 #' game_pk: character
 #' player_name: character
@@ -62,7 +79,7 @@
 #'
 #'
 #' @importFrom jsonlite fromJSON
-#' @importFrom dplyr bind_rows arranage
+#' @importFrom dplyr bind_rows arrange mutate_at vars
 #' @importFrom glue glue
 #'
 #' @export
@@ -73,7 +90,32 @@ statcast_pbp_college <- function(game_pk) {
 
 df <- jsonlite::fromJSON(glue::glue("https://baseballsavant.mlb.com/gf?game_pk=",game_pk), flatten = T)
 
-df <- dplyr::bind_rows(df[['team_home']],df[['team_away']]) |>
+numeric_cols <- c("inning","ab_number","cap_index","outs","batter","pitcher","team_batting_id","team_fielding_id",
+                  "strikes","balls","pre_strikes","pre_balls","start_speed","end_speed","sz_top","sz_bot",
+                  "extension","plateTime","zone","spin_rate","px","pz","x0","y0","z0","ax","ay","az","vx0","vy0","vz0",
+                  "pfxX","pfxZ","pfxZWithGravity","pfxXWithGravity","pfxZWithGravityNice","pfxXNoAbs","breakX","breakZ",
+                  "inducedBreakZ","pitch_number","player_total_pitches","player_total_pitches_pitch_types","game_total_pitches",
+                  "game_pk","hit_speed_round","hit_speed","hit_distance","hit_angle","is_barrel","hc_x","hc_x_ft","hc_y","hc_y_ft")
+
+suppressWarnings(
+    home_df <- df[['team_home']] |>
+      dplyr::mutate_at(dplyr::vars(!!numeric_cols), function(x){as.character(x)})
+  )
+suppressWarnings(
+  home_df <- df[['team_home']] |>
+    dplyr::mutate_at(dplyr::vars(numeric_cols), function(x){as.numeric(as.character(x))})
+)
+
+suppressWarnings(
+  away_df <- df[['team_away']] |>
+    dplyr::mutate_at(dplyr::vars(!!numeric_cols), function(x){as.character(x)})
+)
+suppressWarnings(
+  away_df <- df[['team_away']] |>
+    dplyr::mutate_at(dplyr::vars(numeric_cols), function(x){as.numeric(as.character(x))})
+)
+
+df <-  dplyr::bind_rows(home_df, away_df) |>
   dplyr::arrange(inning,ab_number,pitch_number)
 
 return(df)
