@@ -54,9 +54,11 @@ ncaa_pbp <- function(game_id = NA_real_,
 
       mapped_table <- lapply(seq_along(table_list), function(i) add_inning_column(table_list[[i]], i))
 
-      mapped_table <- mapped_table |> dplyr::bind_rows() |>
-        dplyr::mutate(away_team = names(.)[1],
-               home_team = names(.)[3]) |>
+      mapped_table <- mapped_table |> dplyr::bind_rows()
+
+      mapped_table <- mapped_table |>
+        dplyr::mutate(away_team = names(mapped_table)[1],
+               home_team = names(mapped_table)[3]) |>
         dplyr::rename(away_des = 1,
                       home_des = 3) |>
         dplyr::mutate(game_id = as.numeric(gsub("\\D", "", url)),
