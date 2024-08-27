@@ -39,17 +39,17 @@ ncaa_game_logs <- function(player_id,year,type = "batting", span = 'game') {
     dplyr::select("id")
   batting_id <- season_ids |>
     dplyr::filter(.data$season == year) |>
-    dplyr::select("batting_id")
+    dplyr::pull("batting_id")
   pitching_id <- season_ids |>
     dplyr::filter(.data$season == year) |>
-    dplyr::select("pitching_id")
+    dplyr::pull("pitching_id")
   fielding_id <- season_ids |>
     dplyr::filter(.data$season == year) |>
     dplyr::mutate(fielding_id = pitching_id + 1) |>
-    dplyr::select("fielding_id")
+    dplyr::pull("fielding_id")
 
 
-      if (type == "batting") {
+      if (type == "batting" & span == "game") {
 
         batting_url <- paste0("http://stats.ncaa.org/players/",player_id,"&year_stat_category_id=",batting_id)
 
@@ -64,7 +64,44 @@ ncaa_game_logs <- function(player_id,year,type = "batting", span = 'game') {
         last <- trimws(gsub(",.*","",player_name))
         first <- trimws(gsub(".*,","",player_name))
         player_name <- paste(first, last)
-      } else {
+
+        payload_df <- ((batting_payload |>
+                          rvest::html_elements("table"))[[2]] |>
+                         rvest::html_table() |>
+                         dplyr::tibble())
+
+        payload_df <- dplyr::filter(payload_df, nchar(Date)==10)
+
+        payload_df <- payload_df |> dplyr::mutate(dplyr::across(4:ncol(payload_df), ~ gsub("/","",.)))
+
+        if ('OPP DP' %in% colnames(payload_df) == TRUE) {
+          payload_df <- payload_df |>
+            dplyr::rename("DP" = "OPP DP")
+        }
+
+        batting_cols <- c("Date", "Opponent", "Result",
+                          "R", "AB", "H", "2B", "3B", "TB", "HR", "RBI",
+                          "BB", "HBP", "SF", "SH", "K", "DP", "CS", "Picked",
+                          "SB", "IBB", "RBI2out")
+
+        payload_df <- payload_df |>
+          dplyr::select(batting_cols)
+
+        cols_to_num <- c("R", "AB", "H", "2B", "3B", "TB", "HR", "RBI",
+                         "BB", "HBP", "SF", "SH", "K", "DP", "CS", "Picked",
+                         "SB", "IBB", "RBI2out")
+        suppressWarnings(
+          payload_df <- payload_df |>
+            dplyr::mutate_at(cols_to_num, as.numeric)
+        )
+        payload_df <- payload_df |>
+          dplyr::mutate(
+            player_id = player_id,
+            player_name = player_name,
+            Year = year) |>
+          dplyr::select("player_id", "player_name", tidyr::everything())
+
+      } else if (type == "pitching" & span == "game") {
 
         pitching_url <- paste0("http://stats.ncaa.org/players/",player_id,"&year_stat_category_id=",pitching_id)
 
@@ -81,90 +118,45 @@ ncaa_game_logs <- function(player_id,year,type = "batting", span = 'game') {
         last <- trimws(gsub(",.*","",player_name))
         first <- trimws(gsub(".*,","",player_name))
         player_name <- paste(first, last)
-      }
 
-      if (span == 'game') {
+        payload_df <- ((pitching_payload |>
+                          rvest::html_elements("table"))[[2]] |>
+                         rvest::html_table() |>
+                         dplyr::tibble())
 
-        if (type == "batting") {
+        pitch_cols <- c("Date", "Opponent", "Result",
+                        "App", "GS", "IP", "CG", "H", "R", "ER", "BB",
+                        "SO", "SHO", "BF", "P-OAB", "2B-A", "3B-A", "Bk", "HR-A",
+                        "WP", "HB", "IBB","Inh Run","Inh Run Score",
+                        "SHA","SFA","Pitches","GO","FO","W","L","SV","OrdAppeared","KL","pickoffs")
 
-          payload_df <- ((batting_payload |>
-                            rvest::html_elements("table"))[[2]] |>
-                           rvest::html_table() |>
-                           dplyr::tibble())
+        payload_df <- payload_df |>
+          dplyr::select(pitch_cols)
 
-          payload_df <- dplyr::filter(payload_df, nchar(Date)==10)
+        payload_df <- dplyr::filter(payload_df, nchar(Date)==10, App == 1)
 
-          payload_df <- payload_df |> dplyr::mutate(dplyr::across(4:ncol(payload_df), ~ gsub("/","",.)))
+        payload_df <- payload_df |> dplyr::mutate(dplyr::across(4:ncol(payload_df), ~ gsub("/","",.)))
 
-          if ('OPP DP' %in% colnames(payload_df) == TRUE) {
-            payload_df <- payload_df |>
-              dplyr::rename("DP" = "OPP DP")
-          }
+        cols_to_num <- c(
+          "App", "GS", "IP", "CG", "H", "R", "ER", "BB",
+          "SO", "SHO", "BF", "P-OAB", "2B-A", "3B-A", "Bk", "HR-A",
+          "WP", "HB", "IBB","Inh Run","Inh Run Score",
+          "SHA","SFA","Pitches","GO","FO","W","L","SV","OrdAppeared","KL","pickoffs")
 
-          batting_cols <- c("Date", "Opponent", "Result",
-                            "R", "AB", "H", "2B", "3B", "TB", "HR", "RBI",
-                            "BB", "HBP", "SF", "SH", "K", "DP", "CS", "Picked",
-                            "SB", "IBB", "RBI2out")
 
+        suppressWarnings(
           payload_df <- payload_df |>
-            dplyr::select(batting_cols)
+            dplyr::mutate_at(cols_to_num, as.numeric)
+        )
 
-          cols_to_num <- c("R", "AB", "H", "2B", "3B", "TB", "HR", "RBI",
-                           "BB", "HBP", "SF", "SH", "K", "DP", "CS", "Picked",
-                           "SB", "IBB", "RBI2out")
-          suppressWarnings(
-            payload_df <- payload_df |>
-              dplyr::mutate_at(cols_to_num, as.numeric)
-          )
-          payload_df <- payload_df |>
-            dplyr::mutate(
-              player_id = player_id,
-              player_name = player_name,
-              Year = year) |>
-            dplyr::select("player_id", "player_name", tidyr::everything())
+        payload_df <- payload_df |>
+          dplyr::mutate(
+            player_id = player_id,
+            player_name = player_name,
+            Year = year) |>
+          dplyr::select("player_id", "player_name", tidyr::everything())
 
-         } else if (type == "pitching") {
-
-          payload_df <- ((pitching_payload |>
-                            rvest::html_elements("table"))[[2]] |>
-                           rvest::html_table() |>
-                           dplyr::tibble())
-
-          pitch_cols <- c("Date", "Opponent", "Result",
-                            "App", "GS", "IP", "CG", "H", "R", "ER", "BB",
-                            "SO", "SHO", "BF", "P-OAB", "2B-A", "3B-A", "Bk", "HR-A",
-                            "WP", "HB", "IBB","Inh Run","Inh Run Score",
-                          "SHA","SFA","Pitches","GO","FO","W","L","SV","OrdAppeared","KL","pickoffs")
-
-          payload_df <- payload_df |>
-            dplyr::select(pitch_cols)
-
-          payload_df <- dplyr::filter(payload_df, nchar(Date)==10, App == 1)
-
-          payload_df <- payload_df |> dplyr::mutate(dplyr::across(4:ncol(payload_df), ~ gsub("/","",.)))
-
-          cols_to_num <- c(
-                           "App", "GS", "IP", "CG", "H", "R", "ER", "BB",
-                           "SO", "SHO", "BF", "P-OAB", "2B-A", "3B-A", "Bk", "HR-A",
-                           "WP", "HB", "IBB","Inh Run","Inh Run Score",
-                           "SHA","SFA","Pitches","GO","FO","W","L","SV","OrdAppeared","KL","pickoffs")
-
-
-          suppressWarnings(
-            payload_df <- payload_df |>
-              dplyr::mutate_at(cols_to_num, as.numeric)
-          )
-
-            payload_df <- payload_df |>
-              dplyr::mutate(
-                player_id = player_id,
-                player_name = player_name,
-                Year = year) |>
-              dplyr::select("player_id", "player_name", tidyr::everything())
-         }
-        } else {
-
-         if (type == 'batting') {
+      } else if (type == "batting" & span == "career") {
 
           payload_df <- ((batting_payload |>
                             rvest::html_elements('table'))[[1]] |>
@@ -278,8 +270,8 @@ ncaa_game_logs <- function(player_id,year,type = "batting", span = 'game') {
                 dplyr::mutate_at(4:ncol(payload_df), as.numeric)
             )
 
-          }
         }
+
       payload_df <- payload_df |>
         dplyr::mutate_if(is.numeric, ~tidyr::replace_na(.,0))
 
