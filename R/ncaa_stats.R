@@ -77,6 +77,10 @@ ncaa_stats <- function(team_id, year = 2024, type = 'batting', situation = "all"
     df$Ht <- NA
   }
 
+  if (!"IBB" %in% names(df)) {
+    df$`IBB` <- NA
+  }
+
   if (situation == "all") {
     suppressWarnings({
     df <- dplyr::mutate(df,`#` = as.numeric(`#`))
@@ -101,14 +105,14 @@ ncaa_stats <- function(team_id, year = 2024, type = 'batting', situation = "all"
     "Yr","Pos",
     "GP","GS","BA","OBPct","SlgPct","R","AB",
     "H","2B","3B","TB","HR","RBI","BB","HBP","SF","SH",
-    "K","DP","CS","Picked","SB","RBI2out","Ht","B/T","team_id","conference_id")
+    "K","DP","CS","Picked","SB","IBB","RBI2out","Ht","B/T","team_id","conference_id")
 
   character_cols <- c("year", "team_name", "conference", "Jersey", "Player",
                       "Yr", "Pos")
 
   numeric_cols <- c("division", "GP", "GS", "BA", "OBPct", "SlgPct", "R", "AB",
                     "H", "2B", "3B", "TB", "HR", "RBI", "BB", "HBP", "SF", "SH",
-                    "K", "DP", "CS", "Picked", "SB", "RBI2out", "team_id", "conference_id")
+                    "K", "DP", "CS", "Picked", "SB","IBB","RBI2out", "team_id", "conference_id")
 
   suppressWarnings(
     df <- df |>
