@@ -55,3 +55,23 @@ ncaa_stats(team_id = 574455, year = 2024, type = "fielding")
     ## 9  2024 Tampa     Sunshine State        2 9      Anthony Nu… Jr    3B       57    56    38   114    10  0.938     0     0     0     0     8     0
     ## 10  2024 Tampa     Sunshine State        2 10     Nico Salad… Jr    SS       60    54    68   156    13  0.945     0     0     0     0    32     0
     ## # ℹ 25 more rows
+
+
+Acquire available college baseball games from Baseball Savant
+``` r
+library(collegebaseball)
+available_savant_games()
+```
+
+ ## #         date game_pk                      away_team                      home_team            venue      league_name pbp_available statcast_available
+ ## 1: 2017-02-16  514235      Arkansas-Fort Smith Lions            St. Mary's Rattlers Minute Maid Park College Baseball           Yes                Yes
+ ## 2: 2017-02-17  510555            St. Mary's Rattlers          Tarleton State Texans Minute Maid Park College Baseball           Yes                Yes
+ ## 3: 2017-02-17  510556 Texas A&M-Kingsville Javelinas           Chico State Wildcats Minute Maid Park College Baseball           Yes                Yes
+ ## 4: 2017-02-17  510557      Arkansas-Fort Smith Lions         Central Missouri Mules Minute Maid Park College Baseball           Yes                Yes
+ ## 5: 2017-02-18  510558      Arkansas-Fort Smith Lions Texas A&M-Kingsville Javelinas Minute Maid Park College Baseball           Yes                Yes
+ ## ---                                                                                                                                                    
+ ## 624: 2024-05-25  773295         Wichita State Shockers          East Carolina Pirates BayCare Ballpark College Baseball           Yes                Yes
+ ## 625: 2024-05-25  773296          Florida Atlantic Owls              Tulane Green Wave BayCare Ballpark College Baseball           Yes                Yes
+ ## 626: 2024-05-25  773297         Wichita State Shockers          East Carolina Pirates BayCare Ballpark College Baseball           Yes                Yes
+ ## 627: 2024-05-26  769388               Duke Blue Devils        Florida State Seminoles     Truist Field College Baseball           Yes                Yes
+ ## 628: 2024-05-26  773293         Wichita State Shockers              Tulane Green Wave BayCare Ballpark College Baseball           Yes                Yes
