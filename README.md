@@ -59,19 +59,36 @@ ncaa_stats(team_id = 574455, year = 2024, type = "fielding")
 
 Acquire available college baseball games from Baseball Savant
 ``` r
-library(collegebaseball)
 available_savant_games()
 ```
 
- ## #         date game_pk                      away_team                      home_team            venue      league_name pbp_available statcast_available
- ## 1: 2017-02-16  514235      Arkansas-Fort Smith Lions            St. Mary's Rattlers Minute Maid Park College Baseball           Yes                Yes
- ## 2: 2017-02-17  510555            St. Mary's Rattlers          Tarleton State Texans Minute Maid Park College Baseball           Yes                Yes
- ## 3: 2017-02-17  510556 Texas A&M-Kingsville Javelinas           Chico State Wildcats Minute Maid Park College Baseball           Yes                Yes
- ## 4: 2017-02-17  510557      Arkansas-Fort Smith Lions         Central Missouri Mules Minute Maid Park College Baseball           Yes                Yes
- ## 5: 2017-02-18  510558      Arkansas-Fort Smith Lions Texas A&M-Kingsville Javelinas Minute Maid Park College Baseball           Yes                Yes
- ## ---                                                                                                                                                    
- ## 624: 2024-05-25  773295         Wichita State Shockers          East Carolina Pirates BayCare Ballpark College Baseball           Yes                Yes
- ## 625: 2024-05-25  773296          Florida Atlantic Owls              Tulane Green Wave BayCare Ballpark College Baseball           Yes                Yes
- ## 626: 2024-05-25  773297         Wichita State Shockers          East Carolina Pirates BayCare Ballpark College Baseball           Yes                Yes
- ## 627: 2024-05-26  769388               Duke Blue Devils        Florida State Seminoles     Truist Field College Baseball           Yes                Yes
- ## 628: 2024-05-26  773293         Wichita State Shockers              Tulane Green Wave BayCare Ballpark College Baseball           Yes                Yes
+     ## #         date game_pk                      away_team                      home_team            venue      league_name pbp_available statcast_available
+     ## 1: 2017-02-16  514235      Arkansas-Fort Smith Lions            St. Mary's Rattlers Minute Maid Park College Baseball           Yes                Yes
+     ## 2: 2017-02-17  510555            St. Mary's Rattlers          Tarleton State Texans Minute Maid Park College Baseball           Yes                Yes
+     ## 3: 2017-02-17  510556 Texas A&M-Kingsville Javelinas           Chico State Wildcats Minute Maid Park College Baseball           Yes                Yes
+     ## 4: 2017-02-17  510557      Arkansas-Fort Smith Lions         Central Missouri Mules Minute Maid Park College Baseball           Yes                Yes
+     ## 5: 2017-02-18  510558      Arkansas-Fort Smith Lions Texas A&M-Kingsville Javelinas Minute Maid Park College Baseball           Yes                Yes
+     ## ---                                                                                                                                                    
+     ## 624: 2024-05-25  773295         Wichita State Shockers          East Carolina Pirates BayCare Ballpark College Baseball           Yes                Yes
+     ## 625: 2024-05-25  773296          Florida Atlantic Owls              Tulane Green Wave BayCare Ballpark College Baseball           Yes                Yes
+     ## 626: 2024-05-25  773297         Wichita State Shockers          East Carolina Pirates BayCare Ballpark College Baseball           Yes                Yes
+     ## 627: 2024-05-26  769388               Duke Blue Devils        Florida State Seminoles     Truist Field College Baseball           Yes                Yes
+     ## 628: 2024-05-26  773293         Wichita State Shockers              Tulane Green Wave BayCare Ballpark College Baseball           Yes                Yes
+
+Then, you can acquire Statcast data from a game. We'll use the last game from the previous example:
+``` r
+statcast_pbp_college(773293)
+```
+
+      ## #                              play_id inning ab_number cap_index outs batter stand    batter_name pitcher p_throws   pitcher_name team_batting
+      ## 1  858e6c60-3a85-4161-9be0-ca666c66fd1d      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 2  32d0423a-6309-44a7-ab43-02c098a1231b      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 3  8e694fef-2421-48e9-87fd-d16869cebef0      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 4  b3b8dbd8-059e-49ff-bda2-6eb97c3e4371      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 5  6e07bcbb-ea2e-4d81-8ff4-40da0b622902      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 6  207d9087-cdcb-4cc3-ae29-4f8203d93389      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 7  55764fb4-4e1a-4deb-8b9f-1c57b3b90abc      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 8  6c599a57-03af-4fe9-a216-d188e0255cfa      1         1        33    0 825130     L   Lane Haworth  803068        R Chandler Welch          WSU
+      ## 9  27498b2a-5469-4e7a-ad22-c8a56433c26b      1         2        24    2 825114     L Dayvin Johnson  803068        R Chandler Welch          WSU
+      ## 10 a35d0674-285d-4fab-a1d9-8d3648cfeec7      1         3         0    3 700974     R  Jordan Rogers  803068        R Chandler Welch          WSU
+      ## 11 8d92ee0c-9b9d-4601-bb70-88853a28e143      1         3         0    3 700974     R  Jordan Rogers  803068        R Chandler Welch          WSU
