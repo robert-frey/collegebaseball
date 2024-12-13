@@ -55,24 +55,24 @@ ncaa_roster <- function(team_id = NULL, year, ...){
       roster <- table |>
         dplyr::bind_cols(url_slug)
 
-      if (!"Height" %in% names(df)) {
-        df$Height <- NA
+      if (!"Height" %in% names(roster)) {
+        roster$Height <- NA
       }
 
-      if (!"Hometown" %in% names(df)) {
-        df$Hometown <- NA
+      if (!"Hometown" %in% names(roster)) {
+        roster$Hometown <- NA
       }
 
-      if (!"High School" %in% names(df)) {
-        df$`High School` <- NA
+      if (!"High School" %in% names(roster)) {
+        roster$`High School` <- NA
       }
 
-      if (!"Bats" %in% names(df)) {
-        df$Bats <- NA
+      if (!"Bats" %in% names(roster)) {
+        roster$Bats <- NA
       }
 
-      if (!"Throws" %in% names(df)) {
-        df$Throws <- NA
+      if (!"Throws" %in% names(roster)) {
+        roster$Throws <- NA
       }
 
        roster <- roster |>
