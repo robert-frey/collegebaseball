@@ -39,7 +39,7 @@ ncaa_stats <- function(team_id, year = 2024, type = 'batting', situation = "all"
 
   if (type == "batting") {
 
-  type_id <- baseballr::load_ncaa_baseball_season_ids() |>
+  type_id <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_season_ids.rds") |>
     dplyr::filter(.data$season == year) |>
     dplyr::select("batting_id")
   url <- paste0("http://stats.ncaa.org/teams/",team_id,"/season_to_date_stats?year_stat_category_id=",type_id)
