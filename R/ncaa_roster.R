@@ -6,14 +6,7 @@ ncaa_roster <- function(team_id = NULL, year, ...){
     cli::cli_abort("Enter valid year between 2010-2024 as a number (YYYY)")
   }
 
-  season_ids <- baseballr::load_ncaa_baseball_season_ids()
-
-  id <- season_ids |>
-    dplyr::filter(.data$season == {{year}}) |>
-    dplyr::select("id")
-
   ncaa_teams_lookup <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
-  #ncaa_teams_lookup <- baseballr::load_ncaa_baseball_teams()
 
   school_info <- ncaa_teams_lookup |>
     dplyr::filter(.data$team_id == {{team_id}} & .data$year == {{year}}) |>

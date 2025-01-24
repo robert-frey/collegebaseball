@@ -20,7 +20,7 @@ ncaa_schedule <- function(team_id = NULL, year = NULL){
   if (is.null(year)) {
     cli::cli_abort("Enter valid year as a number (YYYY)")
   }
-  season_ids <- baseballr::load_ncaa_baseball_season_ids()
+  season_ids <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_season_ids.rds")
   year2 <- year
   id <- subset(season_ids, season_ids$season == year, select = id)
   ncaa_baseball_teams <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
