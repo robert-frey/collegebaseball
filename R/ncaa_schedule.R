@@ -54,6 +54,8 @@ ncaa_schedule <- function(team_id = NULL, year = NULL){
   }
   slugs <- game_extractor(data_read)
 
+  slug_filled <- rep(NA_character_, nrow(sched)-nrow(slugs))
+  slugs <- dplyr::add_row(slugs, slug = slug_filled)
 
   sched <- dplyr::bind_cols(sched, slugs)
 
