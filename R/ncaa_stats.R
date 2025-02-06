@@ -21,7 +21,7 @@
 #' \donttest{
 #'   try(ncaa_team_player_stats(team_id = 574224, year = 2024, type = "batting"))
 #' }
-ncaa_stats <- function(team_id, year = 2024, type = 'batting', situation = "all") {
+ncaa_stats <- function(team_id, year = 2025, type = 'batting', situation = "all") {
 
   if (is.null(team_id)) {
     cli::cli_abort("Enter valid team_id")
