@@ -1,6 +1,26 @@
+#' Title
+#' @title **Scrape NCAA baseball Team Rosters (Division I, II, and III)**
+#' @description This function allows the user to obtain a season roster for any school affiliated with the NCAA at the division I, II, or III levels. The function acquires roster data from the NCAA's website (stats.ncaa.org) and returns a tibble.
+#' @param team_id The numerical ID that the NCAA website uses to identify a team
+#' @param year The season for which data should be returned, in the form of "YYYY". Years currently available: 2013-2026.
+#' @return
+#'
+#'
+#' @import rvest
+#'
+#'
+
+
 ncaa_roster <- function(team_id = NULL, year, ...){
   if (is.null(team_id)) {
     cli::cli_abort("Enter valid team_id")
+  }
+  if (nchar(team_id) < 6) {
+    val <- team_id
+
+    team_id <- collegebaseball::ncaa_teams(years = year) |>
+      dplyr::filter(prev_team_id == val) |>
+      dplyr::pull(team_id)
   }
   if (is.null(year)) {
     cli::cli_abort("Enter valid year between 2010-2024 as a number (YYYY)")
@@ -15,16 +35,16 @@ ncaa_roster <- function(team_id = NULL, year, ...){
   url <- paste0("https://stats.ncaa.org/teams/", team_id, "/roster")
 
       payload <- url |>
-        xml2::read_html()
+        rvest::read_html_live()
 
       data_read <- payload
 
       payload1 <- (data_read |>
-                     rvest::html_elements("table"))[[1]] |>
+                     rvest::html_elements("table"))[[2]] |>
         rvest::html_elements("tr")
 
       table <- (data_read |>
-                  rvest::html_elements("table"))[[1]] |>
+                  rvest::html_elements("table"))[[2]] |>
                   rvest::html_table(trim=T)
 
       roster <- table
@@ -87,9 +107,12 @@ ncaa_roster <- function(team_id = NULL, year, ...){
           "high_school" = "High School",
           "player_id",
           "player_url")
+
+
+
       school_info <- school_info |>
-        dplyr::slice(rep(1:n(), each = nrow(roster)))
-      #
+        dplyr::slice(rep(1:dplyr::n(), each = nrow(roster)))
+
       roster <- roster |>
         dplyr::bind_cols(school_info)
 

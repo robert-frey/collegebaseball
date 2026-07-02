@@ -93,13 +93,15 @@ df <- jsonlite::fromJSON(glue::glue("https://baseballsavant.mlb.com/gf?game_pk="
 numeric_cols <- c("inning","ab_number","cap_index","outs","batter","pitcher","team_batting_id","team_fielding_id",
                   "strikes","balls","pre_strikes","pre_balls","start_speed","end_speed","sz_top","sz_bot",
                   "extension","plateTime","zone","spin_rate","px","pz","x0","y0","z0","ax","ay","az","vx0","vy0","vz0",
-                  "pfxX","pfxZ","pfxZWithGravity","pfxXWithGravity","pfxZWithGravityNice","pfxXNoAbs","breakX","breakZ",
+                  "pfxX","pfxZ","pfxZWithGravity","pfxXWithGravity","pfxXNoAbs","breakX","breakZ","breakXInches","breakXFeet",
+                  "breakZInducedInches","breakZInducedFeet","breakZWithGravityInches","breakZWithGravityFeet",
+                  "plateXPoly","plateYPoly","plateZPoly",
                   "inducedBreakZ","pitch_number","player_total_pitches","player_total_pitches_pitch_types","game_total_pitches",
                   "game_pk","hit_speed_round","hit_speed","hit_distance","hit_angle","is_barrel","hc_x","hc_x_ft","hc_y","hc_y_ft")
 
 suppressWarnings(
     home_df <- df[['team_home']] |>
-      dplyr::mutate_at(dplyr::vars(!!numeric_cols), function(x){as.character(x)})
+    dplyr::mutate_at(dplyr::vars(!!numeric_cols), function(x){as.character(x)})
   )
 suppressWarnings(
   home_df <- df[['team_home']] |>

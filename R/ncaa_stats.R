@@ -2,12 +2,12 @@
 #' @title **Scrape NCAA baseball Team Player Stats (Division I, II, and III)**
 #' @description This function allows the user to obtain batting, pitching, or fielding statistics for any school affiliated with the NCAA at the division I, II, or III levels. The function acquires data from the NCAA's website (stats.ncaa.org) and returns a tibble.
 #' @param team_id The numerical ID that the NCAA website uses to identify a team
-#' @param year The season for which data should be returned, in the form of "YYYY". Years currently available: 2013-2024.
+#' @param year The season for which data should be returned, in the form of "YYYY". Years currently available: 2013-2026.
 #' @param type A string indicating whether to return "batting" or "pitching" statistics
 #' @param situation Select which type of stat you'd like to pull:
 #' @return A tibble with variables dependent upon whether you select batting, pitching, and fielding
-#' For batting:
-#' For pitching:
+#'
+#'
 #'
 #' @import dplyr
 #' @import rvest
@@ -21,10 +21,17 @@
 #' \donttest{
 #'   try(ncaa_team_player_stats(team_id = 574224, year = 2024, type = "batting"))
 #' }
-ncaa_stats <- function(team_id, year = 2025, type = 'batting', situation = "all") {
+ncaa_stats <- function(team_id, year = 2026, type = 'batting', situation = "all") {
 
   if (is.null(team_id)) {
     cli::cli_abort("Enter valid team_id")
+  }
+  if (nchar(team_id) < 6) {
+    val <- team_id
+
+    team_id <- collegebaseball::ncaa_teams(years = year) |>
+      dplyr::filter(prev_team_id == val) |>
+      dplyr::pull(team_id)
   }
   if (is.null(year)) {
     cli::cli_abort("Enter valid year as a number (YYYY)")
@@ -45,12 +52,14 @@ ncaa_stats <- function(team_id, year = 2025, type = 'batting', situation = "all"
   url <- paste0("http://stats.ncaa.org/teams/",team_id,"/season_to_date_stats?year_stat_category_id=",type_id)
 
   payload <- url |>
-    xml2::read_html()
+    rvest::read_html_live()
+
+  #Sys.sleep(sample(runif(10,min = 2, max = 4),1))
 
   data_read <- payload
 
   data <- (data_read |>
-             rvest::html_elements("table"))[[1]] |>
+             rvest::html_elements("table"))[[2]] |>
     rvest::html_table()
 
   df <- tibble::tibble(data)
@@ -123,6 +132,10 @@ ncaa_stats <- function(team_id, year = 2025, type = 'batting', situation = "all"
       dplyr::mutate_at(dplyr::vars(numeric_cols), function(x){as.numeric(as.character(x))})
   )
 
+  df <- df |>
+    dplyr::mutate(PA = AB+BB+HBP+SF+SH) |>
+    dplyr::filter(PA > 0 | R > 0 | SB > 0 | CS > 0)
+
   } else if (type == "pitching") {
 
     type_id <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_season_ids.rds") |>
@@ -131,12 +144,12 @@ ncaa_stats <- function(team_id, year = 2025, type = 'batting', situation = "all"
     url <- paste0("http://stats.ncaa.org/teams/",team_id,"/season_to_date_stats?year_stat_category_id=",type_id)
 
     payload <- url |>
-      xml2::read_html()
+      rvest::read_html_live()
 
     data_read <- payload
 
     data <- (data_read |>
-               rvest::html_elements("table"))[[1]] |>
+               rvest::html_elements("table"))[[2]] |>
       rvest::html_table()
 
     df <- tibble::tibble(data)

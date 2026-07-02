@@ -9,10 +9,10 @@
 #'
 #' @export
 #' @examples \donttest{
-#'   try(ncaa_teams(years = c(2013:2024), divisions = c(1,2,3)))
-#'   try(ncaa_teams(years = 2024, divisions = 1))
+#'   try(ncaa_teams(years = c(2013:2026), divisions = c(1,2,3)))
+#'   try(ncaa_teams(years = 2026, divisions = 1))
 #' }
-ncaa_teams <- function(years = 2024, divisions = c(1,2,3)) {
+ncaa_teams <- function(years = 2026, divisions = c(1,2,3)) {
 
   df <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
 

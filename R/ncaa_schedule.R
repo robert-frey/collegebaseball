@@ -1,7 +1,7 @@
 #' Title
 #' @title **Get Schedule and Results for NCAA Baseball Teams**
 #' @param team_id The team's new unique NCAA id
-#' @param year The season i.e. use 2024 for the 2023-2024 season, etc.
+#' @param year The season i.e. use 2026 for the 2025-2026 season, etc.
 #'
 #'
 #' @return A data frame that returns a teams schedule info along with both the home and away team ids, conference, and division, as well as
@@ -10,12 +10,19 @@
 #'
 #' @examples
 #'
-#'  try(ncaa_schedule_info(team_id = 574226, year = 2024))
+#'  try(ncaa_schedule_info(team_id = 614625, year = 2026))
 #'
 ncaa_schedule <- function(team_id = NULL, year = NULL){
 
   if (is.null(team_id)) {
     cli::cli_abort("Enter valid team_id")
+  }
+  if (nchar(team_id) < 6) {
+    val <- team_id
+
+    team_id <- collegebaseball::ncaa_teams(years = year) |>
+      dplyr::filter(prev_team_id == val) |>
+      dplyr::pull(team_id)
   }
   if (is.null(year)) {
     cli::cli_abort("Enter valid year as a number (YYYY)")
@@ -31,7 +38,9 @@ ncaa_schedule <- function(team_id = NULL, year = NULL){
 
   url <- paste0("https://stats.ncaa.org/teams/",team_id)
 
-  payload <- url |> xml2::read_html()
+  payload <- rvest::read_html_live(url)
+
+  Sys.sleep(1)
 
   data_read <- payload
 
