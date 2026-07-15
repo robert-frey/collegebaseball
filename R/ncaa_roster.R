@@ -3,12 +3,21 @@
 #' @description This function allows the user to obtain a season roster for any school affiliated with the NCAA at the division I, II, or III levels. The function acquires roster data from the NCAA's website (stats.ncaa.org) and returns a tibble.
 #' @param team_id The numerical ID that the NCAA website uses to identify a team
 #' @param year The season for which data should be returned, in the form of "YYYY". Years currently available: 2013-2026.
-#' @return
+#' @rdname ncaa_roster
+#' @return A data frame of roster data.
 #'
 #'
 #' @import rvest
+#' @import dplyr
+#' @importFrom data.table data.table setDT
+#' @export
 #'
-#'
+#' @examples
+#' \dontrun{
+#' if(interactive()){
+#'  ncaa_roster(548187, 2023)
+#'  }
+#' }
 
 
 ncaa_roster <- function(team_id = NULL, year, ...){
@@ -26,7 +35,21 @@ ncaa_roster <- function(team_id = NULL, year, ...){
     cli::cli_abort("Enter valid year between 2010-2024 as a number (YYYY)")
   }
 
-  ncaa_teams_lookup <- baseballr:::rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
+  rds_from_url <- function(url) {
+    con <- url(url)
+    on.exit(close(con))
+    load <- try(readRDS(con), silent = TRUE)
+
+    if (inherits(load, "try-error")) {
+      cli::cli_warn("Failed to readRDS from {.url {url}}")
+      return(data.table::data.table())
+    }
+
+    data.table::setDT(load)
+    return(load)
+  }
+
+  ncaa_teams_lookup <- rds_from_url("https://raw.githubusercontent.com/robert-frey/college-baseball/main/ncaa_team_lookup.rds")
 
   school_info <- ncaa_teams_lookup |>
     dplyr::filter(.data$team_id == {{team_id}} & .data$year == {{year}}) |>
@@ -118,3 +141,4 @@ ncaa_roster <- function(team_id = NULL, year, ...){
 
   return(roster)
 }
+

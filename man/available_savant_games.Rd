@@ -4,9 +4,11 @@
 \alias{available_savant_games}
 \title{**Get Available College/Summer League Games in Baseball Savant**}
 \usage{
-available_savant_games(level = "College Baseball")
+available_savant_games(year, level = "College Baseball")
 }
 \arguments{
+\item{year}{Year as in season (format: YYYY). Years go from 2017-present}
+
 \item{level}{The level to select from. Available levels: College Baseball, MLB Draft League, Appalachian League,
 Cape Cod Baseball League (NO STATCAST DATA AVAILABLE FOR Cape Cod)}
 }

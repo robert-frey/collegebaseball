@@ -4,7 +4,7 @@
 \alias{ncaa_teams}
 \title{**Get NCAA Baseball Teams**}
 \usage{
-ncaa_teams(years = 2024, divisions = c(1, 2, 3))
+ncaa_teams(years = 2026, divisions = c(1, 2, 3))
 }
 \arguments{
 \item{years}{A year or range of years to acquire data (2013 is the earliest)}
@@ -19,7 +19,7 @@ Title
 }
 \examples{
 \donttest{
-  try(ncaa_teams(years = c(2013:2024), divisions = c(1,2,3)))
-  try(ncaa_teams(years = 2024, divisions = 1))
+  try(ncaa_teams(years = c(2013:2026), divisions = c(1,2,3)))
+  try(ncaa_teams(years = 2026, divisions = 1))
 }
 }

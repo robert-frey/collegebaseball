@@ -9,7 +9,7 @@ ncaa_schedule(team_id = NULL, year = NULL)
 \arguments{
 \item{team_id}{The team's new unique NCAA id}
 
-\item{year}{The season i.e. use 2024 for the 2023-2024 season, etc.}
+\item{year}{The season i.e. use 2026 for the 2025-2026 season, etc.}
 }
 \value{
 A data frame that returns a teams schedule info along with both the home and away team ids, conference, and division, as well as
@@ -20,6 +20,6 @@ Title
 }
 \examples{
 
- try(ncaa_schedule_info(team_id = 574226, year = 2024))
+ try(ncaa_schedule_info(team_id = 614625, year = 2026))
 
 }

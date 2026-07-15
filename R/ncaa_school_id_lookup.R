@@ -8,7 +8,7 @@
 #'
 #' @import baseballr
 #' @import dplyr
-#' @export
+#'
 #'
 #'  @examples \donttest{
 #'   try(ncaa_school_id_lookup("Tamp"))
@@ -22,7 +22,7 @@ ncaa_school_id_lookup <- function(team_name = NULL, season = NULL) {
   }
 
   if (is.null(season) || season < 2013) {
-    x <- cli::cli_abort("Enter a year between 2013-2024")
+    x <- cli::cli_abort("Enter a year between 2013-present")
   }
 
 

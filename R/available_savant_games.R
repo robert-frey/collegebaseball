@@ -43,7 +43,9 @@ available_savant_games <- function(year, level = "College Baseball") {
 
   df <- dplyr::left_join(df,lg,by="away_team")
 
-  df <- dplyr::filter(df,league_name == level)
+  df <- dplyr::filter(df,league_name == level) |>
+    dplyr::mutate(pbp_available = "Yes",
+                  statcast_available = ifelse(level == "Cape Cod Baseball League","No","Yes"))
 
   return(df)
 }
